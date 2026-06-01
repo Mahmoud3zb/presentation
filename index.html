@@ -238,6 +238,14 @@
 
       .slide.active { opacity: 1; visibility: visible; transform: scale(1); }
 
+      /* شريحة عرض الصورة كاملة */
+      .slide-full-image {
+        padding: 0;
+        justify-content: center;
+        align-items: center;
+        background: #040d0b;
+      }
+
       .slide-content { flex: 1; }
       .slide h2 { font-size: 2.8rem; margin-bottom: 20px; color: var(--primary); }
       .slide p { font-size: 1.3rem; line-height: 1.8; margin-bottom: 15px; color: #d1fae5; }
@@ -258,27 +266,27 @@
         flex-shrink: 0;
       }
 
-      /* Background setup to crop the specific screen from the main UI image */
+      /* CSS Sprite logic to split the image accurately */
       .app-mockup {
         width: 100%;
         height: 100%;
-        background-image: url("ui.jpeg"); /* اسم صورة التصميم */
-        background-size: 650% 210%; /* زووم ليناسب حجم هاتف واحد من الشبكة */
+        background-image: url("WhatsApp Image 2026-06-01 at 2.38.57 AM.jpeg");
+        background-size: 610% 210%; 
         background-repeat: no-repeat;
       }
 
-      /* إحداثيات كل شاشة من الصورة المجمعة */
-      .bg-full { background-size: cover; background-position: center; border: none; width: 450px;}
-      .bg-splash { background-position: 18% 5%; }
-      .bg-login { background-position: 38% 5%; }
-      .bg-register { background-position: 58% 5%; }
-      .bg-home { background-position: 78% 5%; }
-      .bg-details { background-position: 99% 5%; }
-      .bg-add { background-position: 18% 95%; }
-      .bg-edit { background-position: 38% 95%; }
-      .bg-fav { background-position: 58% 95%; }
-      .bg-profile { background-position: 78% 95%; }
-      .bg-categories { background-position: 99% 95%; }
+      /* إحداثيات كل شاشة بدقة لتغطية الموبايل المعروض في الشريحة */
+      .bg-splash { background-position: 20% 4%; }
+      .bg-login { background-position: 40% 4%; }
+      .bg-register { background-position: 60% 4%; }
+      .bg-home { background-position: 80% 4%; }
+      .bg-details { background-position: 100% 4%; }
+      
+      .bg-add { background-position: 20% 98%; }
+      .bg-edit { background-position: 40% 98%; }
+      .bg-fav { background-position: 60% 98%; }
+      .bg-profile { background-position: 80% 98%; }
+      .bg-categories { background-position: 100% 98%; }
 
       .demo-screen {
         position: absolute;
@@ -333,7 +341,7 @@
       .remote-wrapper:hover { transform: translateY(-10px); }
 
       .remote-control {
-        width: 160px; /* تم التوسيع ليناسب 3 أعمدة */
+        width: 160px;
         background: linear-gradient(145deg, #2b2b2b, #151515);
         border-radius: 40px;
         padding: 30px 20px;
@@ -372,7 +380,7 @@
 
       .numpad {
         display: grid;
-        grid-template-columns: repeat(3, 1fr); /* 3 أعمدة بدلاً من 2 لتناسب 12 زر */
+        grid-template-columns: repeat(3, 1fr);
         gap: 12px;
         justify-items: center;
         background: rgba(0, 0, 0, 0.2);
@@ -386,6 +394,10 @@
         background: linear-gradient(to bottom, #444, #2a2a2a);
         color: #fff; font-family: "Inter", sans-serif; font-weight: 700;
         font-size: 1.1rem; border: 1px solid #111;
+      }
+      
+      .btn-num.invisible {
+          opacity: 0; pointer-events: none;
       }
 
       .zoom-controls {
@@ -419,7 +431,13 @@
             <div class="static-overlay" id="static-overlay"></div>
             <div class="osd-text" id="osd">CH 1</div>
 
-            <div class="slide active" id="slide-1">
+            <!-- Slide 1: Full Image Only (All UI Screens) -->
+            <div class="slide slide-full-image active" id="slide-1">
+                <img src="ui.jpeg" style="max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 15px; box-shadow: 0 20px 40px rgba(0,0,0,0.6);" alt="Full UI Overview" />
+            </div>
+
+            <!-- Slide 2: Overview -->
+            <div class="slide" id="slide-2">
               <div class="slide-content">
                 <h2>1. Project Overview</h2>
                 <p>
@@ -437,12 +455,13 @@
                   <li>Integrate external services such as Google Maps.</li>
                 </ul>
               </div>
-              <div class="slide-visual" style="width: 450px; border: none; background: transparent; box-shadow: none;">
-                <div class="app-mockup bg-full" style="border-radius: 15px; box-shadow: 0 20px 40px rgba(0,0,0,0.6);"></div>
+              <div class="slide-visual">
+                <div class="app-mockup bg-splash"></div>
               </div>
             </div>
 
-            <div class="slide" id="slide-2">
+            <!-- Slide 3: Idea -->
+            <div class="slide" id="slide-3">
               <div class="slide-content">
                 <h2>2. Project Idea</h2>
                 <p>ShopEase is a shopping application that enables users to:</p>
@@ -462,7 +481,8 @@
               </div>
             </div>
 
-            <div class="slide" id="slide-3">
+            <!-- Slide 4: Tech -->
+            <div class="slide" id="slide-4">
               <div class="slide-content">
                 <h2>3. Technologies Used</h2>
                 <p><span class="highlight">Flutter</span> Cross-platform framework used to build the application.</p>
@@ -473,11 +493,12 @@
                 <p><span class="highlight">Material Design</span> Used to create a modern and responsive user interface.</p>
               </div>
               <div class="slide-visual">
-                <div class="app-mockup bg-splash"></div>
+                <div class="app-mockup bg-register"></div>
               </div>
             </div>
 
-            <div class="slide" id="slide-4">
+            <!-- Slide 5: Flow -->
+            <div class="slide" id="slide-5">
               <div class="slide-content">
                 <h2>4. Application Flow</h2>
                 <ul>
@@ -490,11 +511,12 @@
                 </ul>
               </div>
               <div class="slide-visual">
-                <div class="app-mockup bg-add"></div>
+                <div class="app-mockup bg-categories"></div>
               </div>
             </div>
 
-            <div class="slide" id="slide-5">
+            <!-- Slide 6: Auth -->
+            <div class="slide" id="slide-6">
               <div class="slide-content">
                 <h2>5. Authentication</h2>
                 <p>The authentication module provides secure access to the application.</p>
@@ -514,7 +536,8 @@
               </div>
             </div>
 
-            <div class="slide" id="slide-6">
+            <!-- Slide 7: Home -->
+            <div class="slide" id="slide-7">
               <div class="slide-content">
                 <h2>6. Home Screen</h2>
                 <p>The Home Screen is the central part of the application.</p>
@@ -536,7 +559,8 @@
               </div>
             </div>
 
-            <div class="slide" id="slide-7">
+            <!-- Slide 8: Details -->
+            <div class="slide" id="slide-8">
               <div class="slide-content">
                 <h2>7. Product Details</h2>
                 <p>Displays complete information about the selected product.</p>
@@ -556,7 +580,8 @@
               </div>
             </div>
 
-            <div class="slide" id="slide-8">
+            <!-- Slide 9: CRUD -->
+            <div class="slide" id="slide-9">
               <div class="slide-content">
                 <h2>8. CRUD Operations</h2>
                 <p>The application supports full CRUD functionality.</p>
@@ -564,11 +589,12 @@
                 <p>Provides complete product lifecycle management.</p>
               </div>
               <div class="slide-visual">
-                <div class="app-mockup bg-edit"></div>
+                <div class="app-mockup bg-add"></div>
               </div>
             </div>
 
-            <div class="slide" id="slide-9">
+            <!-- Slide 10: Favorites -->
+            <div class="slide" id="slide-10">
               <div class="slide-content">
                 <h2>9. Favorites System</h2>
                 <p>Allows users to save products they like.</p>
@@ -587,7 +613,8 @@
               </div>
             </div>
 
-            <div class="slide" id="slide-10">
+            <!-- Slide 11: Profile & Maps -->
+            <div class="slide" id="slide-11">
               <div class="slide-content">
                 <h2>10. Profile & Maps</h2>
                 <h3>Profile:</h3>
@@ -608,7 +635,8 @@
               </div>
             </div>
 
-            <div class="slide" id="slide-11">
+            <!-- Slide 12: State Management -->
+            <div class="slide" id="slide-12">
               <div class="slide-content">
                 <h2>11. State Management</h2>
                 <p>Provider was used because it:</p>
@@ -626,11 +654,12 @@
                 </ul>
               </div>
               <div class="slide-visual">
-                <div class="app-mockup bg-categories"></div>
+                <div class="app-mockup bg-edit"></div>
               </div>
             </div>
 
-            <div class="slide" id="slide-12">
+            <!-- Slide 13: Conclusion -->
+            <div class="slide" id="slide-13">
               <div class="slide-content">
                 <h2>12. Conclusion</h2>
                 <p>ShopEase demonstrates:</p>
@@ -644,8 +673,9 @@
                   <li>Responsive User Interface.</li>
                 </ul>
               </div>
-              <div class="slide-visual" style="width: 450px; border: none; background: transparent; box-shadow: none;">
-                <div class="app-mockup bg-full" style="border-radius: 15px; box-shadow: 0 20px 40px rgba(0,0,0,0.6);"></div>
+              <!-- الخاتمة مع الصورة الكاملة للـ UI -->
+              <div class="slide-visual" style="width: 450px; border: none; background: transparent; box-shadow: none; display: flex; align-items: center; justify-content: center;">
+                <img src="WhatsApp Image 2026-06-01 at 2.38.57 AM.jpeg" style="max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 15px; box-shadow: 0 20px 40px rgba(0,0,0,0.6);" alt="Full UI" />
               </div>
             </div>
 
@@ -677,6 +707,7 @@
 
         <div class="remote-label">Slides</div>
         <div class="numpad">
+          <!-- 15 Buttons Grid to fit 13 Slides seamlessly -->
           <button class="btn btn-num" onclick="goToSlide(1)">1</button>
           <button class="btn btn-num" onclick="goToSlide(2)">2</button>
           <button class="btn btn-num" onclick="goToSlide(3)">3</button>
@@ -689,6 +720,9 @@
           <button class="btn btn-num" onclick="goToSlide(10)">10</button>
           <button class="btn btn-num" onclick="goToSlide(11)">11</button>
           <button class="btn btn-num" onclick="goToSlide(12)">12</button>
+          <button class="btn btn-num" onclick="goToSlide(13)">13</button>
+          <button class="btn btn-num invisible"></button>
+          <button class="btn btn-num invisible"></button>
         </div>
 
         <div class="remote-label" style="margin-top: 5px">Zoom</div>
@@ -829,9 +863,11 @@
           case "7": goToSlide(7); break;
           case "8": goToSlide(8); break;
           case "9": goToSlide(9); break;
-          case "10": goToSlide(10); break;
-          case "11": goToSlide(11); break;
-          case "12": goToSlide(12); break;
+          // دعم الأرقام عبر الكيبورد (لتبسيط الوصول تم ربط 0 إلى الشريحة 10 وهكذا)
+          case "0": goToSlide(10); break;
+          case "q": goToSlide(11); break;
+          case "w": goToSlide(12); break;
+          case "e": goToSlide(13); break;
           case "+": adjustZoom(0.1); break;
           case "-": adjustZoom(-0.1); break;
           case "p": togglePower(); break;
