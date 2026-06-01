@@ -1,0 +1,843 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ShopEase - Presentation</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+
+    <style>
+      :root {
+        --wall-color: #080c13;
+        --floor-color: #030508;
+        --tv-frame: #050505;
+        --tv-screen: #0a1118;
+        --primary: #86efac;
+        --accent: #22c55e;
+        --text-light: #f8fafc;
+        --ambient-light: rgba(134, 239, 172, 0.25);
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        font-family: "Inter", sans-serif;
+        background-color: #000;
+        color: var(--text-light);
+        height: 100vh;
+        overflow: hidden;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        perspective: 1200px;
+      }
+
+      .room-scene {
+        position: relative;
+        width: 100vw;
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        transition: transform 1s cubic-bezier(0.25, 1, 0.5, 1);
+        transform-style: preserve-3d;
+        transform: scale(1);
+      }
+
+      .wall {
+        position: absolute;
+        top: -20%;
+        left: -20%;
+        width: 140%;
+        height: 140%;
+        background: radial-gradient(circle at center, var(--wall-color) 0%, #000 80%);
+        transform: translateZ(-200px);
+        z-index: 1;
+      }
+
+      .floor {
+        position: absolute;
+        bottom: -50%;
+        left: -50%;
+        width: 200%;
+        height: 100%;
+        background: linear-gradient(to top, #000 0%, var(--floor-color) 100%);
+        transform: rotateX(80deg) translateZ(-150px);
+        z-index: 1;
+        box-shadow: inset 0 100px 100px rgba(0, 0, 0, 0.9);
+      }
+
+      .tv-wrapper {
+        position: relative;
+        width: 75vw;
+        max-width: 1100px;
+        height: 42.18vw;
+        max-height: 618px;
+        z-index: 10;
+        transform: translateY(-5%);
+      }
+
+      .tv-ambilight {
+        position: absolute;
+        top: 5%;
+        left: 5%;
+        width: 90%;
+        height: 90%;
+        background: var(--ambient-light);
+        filter: blur(80px);
+        z-index: 5;
+        transition: background 0.5s, opacity 0.8s;
+      }
+
+      .tv-frame {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: var(--tv-frame);
+        border-radius: 15px;
+        padding: 10px;
+        box-shadow: 0 30px 60px rgba(0, 0, 0, 0.9), inset 0 0 2px rgba(255, 255, 255, 0.1), 0 0 0 3px #111;
+        display: flex;
+        z-index: 10;
+      }
+
+      .tv-screen {
+        position: relative;
+        flex-grow: 1;
+        background: var(--tv-screen);
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: inset 0 0 40px rgba(0, 0, 0, 0.8);
+      }
+
+      .tv-screen::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        right: -50%;
+        width: 200%;
+        height: 100%;
+        background: linear-gradient(to right, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.02) 50%, rgba(255, 255, 255, 0) 100%);
+        transform: skewX(-15deg);
+        pointer-events: none;
+        z-index: 300;
+      }
+
+      .power-overlay {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 100%;
+        height: 100%;
+        background: #000;
+        transform: translate(-50%, -50%) scale(1, 1);
+        opacity: 0;
+        pointer-events: none;
+        z-index: 250;
+        transition: transform 0.3s cubic-bezier(0.1, 0.8, 0.3, 1), opacity 0.3s;
+      }
+
+      .is-off .power-overlay {
+        opacity: 1;
+        pointer-events: all;
+        animation: tvTurnOff 0.4s forwards;
+      }
+
+      @keyframes tvTurnOff {
+        0% { transform: translate(-50%, -50%) scale(1, 1); opacity: 0; }
+        50% { transform: translate(-50%, -50%) scale(1, 0.01); opacity: 1; }
+        100% { transform: translate(-50%, -50%) scale(0, 0); opacity: 1; }
+      }
+
+      .blackout-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: #000;
+        z-index: 110;
+        opacity: 0;
+        pointer-events: none;
+      }
+
+      .blackout-overlay.active { animation: blackoutAnim 0.3s ease-in-out; }
+
+      .static-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+        opacity: 0;
+        pointer-events: none;
+        z-index: 120;
+        mix-blend-mode: screen;
+      }
+
+      .static-overlay.active { animation: tvStatic 0.3s steps(4); }
+
+      @keyframes blackoutAnim {
+        0% { opacity: 0; }
+        30% { opacity: 1; }
+        70% { opacity: 1; }
+        100% { opacity: 0; }
+      }
+
+      @keyframes tvStatic {
+        0% { opacity: 0.5; transform: scale(1.1) translate(1%, 1%); }
+        50% { opacity: 0.8; transform: scale(1.1) translate(-1%, -1%); }
+        100% { opacity: 0; }
+      }
+
+      .tv-stand {
+        position: absolute;
+        bottom: -40px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 30%;
+        height: 20px;
+        background: linear-gradient(to bottom, #222, #000);
+        border-radius: 5px;
+        box-shadow: 0 20px 30px rgba(0, 0, 0, 0.9);
+        z-index: 9;
+      }
+
+      .slide {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        padding: 40px 60px;
+        opacity: 0;
+        visibility: hidden;
+        background: linear-gradient(135deg, #051310 0%, #0a1f1b 100%);
+        transform: scale(0.98);
+        transition: opacity 0.1s;
+        z-index: 50;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 40px;
+      }
+
+      .slide.active { opacity: 1; visibility: visible; transform: scale(1); }
+
+      .slide-content { flex: 1; }
+      .slide h2 { font-size: 2.8rem; margin-bottom: 20px; color: var(--primary); }
+      .slide p { font-size: 1.3rem; line-height: 1.8; margin-bottom: 15px; color: #d1fae5; }
+      .slide ul { margin-bottom: 20px; padding-left: 30px; }
+      .slide li { font-size: 1.2rem; line-height: 1.8; margin-bottom: 10px; color: #d1fae5; }
+      .highlight { color: #fff; font-weight: 800; border-bottom: 2px solid var(--primary); }
+
+      /* Visual container for the UI screenshots */
+      .slide-visual {
+        width: 250px;
+        height: 520px;
+        border-radius: 20px;
+        background-color: #000;
+        border: 6px solid #1f2937;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+        overflow: hidden;
+        position: relative;
+        flex-shrink: 0;
+      }
+
+      /* Background setup to crop the specific screen from the main UI image */
+      .app-mockup {
+        width: 100%;
+        height: 100%;
+        background-image: url("ui.jpeg"); /* اسم صورة التصميم */
+        background-size: 650% 210%; /* زووم ليناسب حجم هاتف واحد من الشبكة */
+        background-repeat: no-repeat;
+      }
+
+      /* إحداثيات كل شاشة من الصورة المجمعة */
+      .bg-full { background-size: cover; background-position: center; border: none; width: 450px;}
+      .bg-splash { background-position: 18% 5%; }
+      .bg-login { background-position: 38% 5%; }
+      .bg-register { background-position: 58% 5%; }
+      .bg-home { background-position: 78% 5%; }
+      .bg-details { background-position: 99% 5%; }
+      .bg-add { background-position: 18% 95%; }
+      .bg-edit { background-position: 38% 95%; }
+      .bg-fav { background-position: 58% 95%; }
+      .bg-profile { background-position: 78% 95%; }
+      .bg-categories { background-position: 99% 95%; }
+
+      .demo-screen {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: radial-gradient(circle, #0a1f1b 0%, #051310 100%);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        z-index: 60;
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.4s ease;
+      }
+
+      .demo-screen.active { opacity: 1; visibility: visible; }
+      .demo-screen h1 { font-size: 3.5rem; color: #fff; margin-bottom: 15px; text-shadow: 0 0 20px rgba(134, 239, 172, 0.5); }
+      .demo-screen p { font-size: 1.4rem; color: #a7f3d0; margin-bottom: 40px; text-align: center; max-width: 600px; }
+
+      .open-demo-btn {
+        background: linear-gradient(135deg, #86efac, #22c55e);
+        color: #000;
+        padding: 15px 40px;
+        font-size: 1.5rem;
+        font-weight: bold;
+        border-radius: 50px;
+        text-decoration: none;
+        box-shadow: 0 10px 25px rgba(134, 239, 172, 0.4);
+        transition: transform 0.2s;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        border: none;
+        cursor: pointer;
+      }
+
+      .open-demo-btn:hover { transform: translateY(-3px); }
+
+      /* ================= Remote Control ================= */
+      .remote-wrapper {
+        position: absolute;
+        right: 3%;
+        bottom: 8%;
+        z-index: 1000;
+        perspective: 800px;
+        transition: transform 0.3s;
+      }
+
+      .remote-wrapper:hover { transform: translateY(-10px); }
+
+      .remote-control {
+        width: 160px; /* تم التوسيع ليناسب 3 أعمدة */
+        background: linear-gradient(145deg, #2b2b2b, #151515);
+        border-radius: 40px;
+        padding: 30px 20px;
+        box-shadow: -15px 20px 40px rgba(0, 0, 0, 0.9), inset 2px 2px 5px rgba(255, 255, 255, 0.1), inset -5px -5px 15px rgba(0, 0, 0, 0.8);
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        border: 1px solid #333;
+        transform: rotateY(-15deg) rotateX(10deg);
+      }
+
+      .remote-led {
+        width: 10px;
+        height: 10px;
+        background: #444;
+        border-radius: 50%;
+        margin: 0 auto -5px auto;
+        box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.5);
+        transition: background 0.1s;
+      }
+
+      .remote-led.blink { background: #ff0000; box-shadow: 0 0 15px #ff0000, inset 0 0 5px #fff; }
+
+      .remote-top-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; }
+
+      .btn {
+        border: none; border-radius: 50%; color: #fff; cursor: pointer;
+        box-shadow: 0 5px 10px rgba(0, 0, 0, 0.6), inset 0 2px 2px rgba(255, 255, 255, 0.1);
+        transition: all 0.1s; display: flex; justify-content: center; align-items: center;
+      }
+
+      .btn:active { transform: translateY(3px); box-shadow: 0 2px 5px rgba(0, 0, 0, 0.8), inset 0 3px 5px rgba(0, 0, 0, 0.5); }
+
+      .btn-power { width: 40px; height: 40px; background: radial-gradient(circle at top, #ef4444, #991b1b); font-size: 1.2rem; }
+      .btn-demo { width: 40px; height: 40px; background: radial-gradient(circle at top, #86efac, #15803d); font-size: 1rem; color: #000; }
+
+      .numpad {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr); /* 3 أعمدة بدلاً من 2 لتناسب 12 زر */
+        gap: 12px;
+        justify-items: center;
+        background: rgba(0, 0, 0, 0.2);
+        padding: 15px 10px;
+        border-radius: 20px;
+        box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.5);
+      }
+
+      .btn-num {
+        width: 36px; height: 36px; border-radius: 8px;
+        background: linear-gradient(to bottom, #444, #2a2a2a);
+        color: #fff; font-family: "Inter", sans-serif; font-weight: 700;
+        font-size: 1.1rem; border: 1px solid #111;
+      }
+
+      .zoom-controls {
+        display: flex; flex-direction: column; align-items: center; gap: 5px;
+        background: #1a1a1a; padding: 10px; border-radius: 30px; box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.8);
+      }
+
+      .btn-zoom { width: 45px; height: 35px; border-radius: 10px; background: linear-gradient(to bottom, #555, #333); font-size: 1.2rem; }
+
+      .remote-label { text-align: center; color: #777; font-size: 0.7rem; font-weight: bold; margin-top: 5px; text-transform: uppercase; }
+
+      .osd-text {
+        position: absolute; top: 30px; right: 40px;
+        font-family: "Inter", sans-serif; font-size: 1.8rem;
+        color: #86efac; text-shadow: 0 0 10px #86efac;
+        z-index: 200; opacity: 0; transition: opacity 0.3s; pointer-events: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="room-scene" id="room">
+      <div class="wall"></div>
+      <div class="floor"></div>
+
+      <div class="tv-wrapper">
+        <div class="tv-ambilight" id="ambilight"></div>
+        <div class="tv-frame">
+          <div class="tv-screen" id="tv-screen">
+            <div class="power-overlay"></div>
+            <div class="blackout-overlay" id="blackout-overlay"></div>
+            <div class="static-overlay" id="static-overlay"></div>
+            <div class="osd-text" id="osd">CH 1</div>
+
+            <div class="slide active" id="slide-1">
+              <div class="slide-content">
+                <h2>1. Project Overview</h2>
+                <p>
+                  A mobile e-commerce application developed using Flutter that
+                  allows users to browse products, manage favorites, update
+                  product information, and navigate through a modern and
+                  responsive user interface.
+                </p>
+                <p>Project Objectives</p>
+                <ul>
+                  <li>Provide a simple shopping experience.</li>
+                  <li>Practice Flutter application development.</li>
+                  <li>Apply State Management using Provider.</li>
+                  <li>Implement local data persistence.</li>
+                  <li>Integrate external services such as Google Maps.</li>
+                </ul>
+              </div>
+              <div class="slide-visual" style="width: 450px; border: none; background: transparent; box-shadow: none;">
+                <div class="app-mockup bg-full" style="border-radius: 15px; box-shadow: 0 20px 40px rgba(0,0,0,0.6);"></div>
+              </div>
+            </div>
+
+            <div class="slide" id="slide-2">
+              <div class="slide-content">
+                <h2>2. Project Idea</h2>
+                <p>ShopEase is a shopping application that enables users to:</p>
+                <ul>
+                  <li>Create an account and log in.</li>
+                  <li>Browse available products.</li>
+                  <li>View product details.</li>
+                  <li>Add products to favorites.</li>
+                  <li>Add, update, and delete products.</li>
+                  <li>Manage personal profile information.</li>
+                  <li>Open Google Maps for navigation.</li>
+                </ul>
+                <p>The application focuses on simplicity, usability, and efficient state management.</p>
+              </div>
+              <div class="slide-visual">
+                <div class="app-mockup bg-home"></div>
+              </div>
+            </div>
+
+            <div class="slide" id="slide-3">
+              <div class="slide-content">
+                <h2>3. Technologies Used</h2>
+                <p><span class="highlight">Flutter</span> Cross-platform framework used to build the application.</p>
+                <p><span class="highlight">Dart</span> Programming language used for development.</p>
+                <p><span class="highlight">Provider</span> Used for State Management and updating the UI dynamically.</p>
+                <p><span class="highlight">Shared Preferences</span> Used to save login status locally.</p>
+                <p><span class="highlight">Google Maps</span> Used for navigation and location services.</p>
+                <p><span class="highlight">Material Design</span> Used to create a modern and responsive user interface.</p>
+              </div>
+              <div class="slide-visual">
+                <div class="app-mockup bg-splash"></div>
+              </div>
+            </div>
+
+            <div class="slide" id="slide-4">
+              <div class="slide-content">
+                <h2>4. Application Flow</h2>
+                <ul>
+                  <li>User logs into the application.</li>
+                  <li>Products are displayed on the Home Screen.</li>
+                  <li>User opens Product Details.</li>
+                  <li>User can add products to Favorites.</li>
+                  <li>User can manage products through CRUD operations.</li>
+                  <li>User can access Profile and Maps features.</li>
+                </ul>
+              </div>
+              <div class="slide-visual">
+                <div class="app-mockup bg-add"></div>
+              </div>
+            </div>
+
+            <div class="slide" id="slide-5">
+              <div class="slide-content">
+                <h2>5. Authentication</h2>
+                <p>The authentication module provides secure access to the application.</p>
+                <h3>Features:</h3>
+                <ul>
+                  <li>Login Screen.</li>
+                  <li>Register Screen.</li>
+                  <li>Input validation.</li>
+                  <li>Persistent login using Shared Preferences.</li>
+                  <li>Automatic session restoration.</li>
+                </ul>
+                <h3>Benefit:</h3>
+                <p>Improves user experience by keeping users logged in between sessions.</p>
+              </div>
+              <div class="slide-visual">
+                <div class="app-mockup bg-login"></div>
+              </div>
+            </div>
+
+            <div class="slide" id="slide-6">
+              <div class="slide-content">
+                <h2>6. Home Screen</h2>
+                <p>The Home Screen is the central part of the application.</p>
+                <h3>Features:</h3>
+                <ul>
+                  <li>Product Grid Layout.</li>
+                  <li>Responsive User Interface.</li>
+                  <li>Easy Navigation.</li>
+                  <li>Product Browsing Experience.</li>
+                </ul>
+                <h3>Technologies:</h3>
+                <ul>
+                  <li>Flutter Widgets.</li>
+                  <li>Provider State Management.</li>
+                </ul>
+              </div>
+              <div class="slide-visual">
+                <div class="app-mockup bg-home"></div>
+              </div>
+            </div>
+
+            <div class="slide" id="slide-7">
+              <div class="slide-content">
+                <h2>7. Product Details</h2>
+                <p>Displays complete information about the selected product.</p>
+                <h3>Features:</h3>
+                <ul>
+                  <li>Product Image.</li>
+                  <li>Product Name.</li>
+                  <li>Product Description.</li>
+                  <li>Price Information.</li>
+                  <li>Favorite Option.</li>
+                </ul>
+                <h3>Benefit:</h3>
+                <p>Allows users to view detailed product information before making decisions.</p>
+              </div>
+              <div class="slide-visual">
+                <div class="app-mockup bg-details"></div>
+              </div>
+            </div>
+
+            <div class="slide" id="slide-8">
+              <div class="slide-content">
+                <h2>8. CRUD Operations</h2>
+                <p>The application supports full CRUD functionality.</p>
+                <h3>Benefits:</h3>
+                <p>Provides complete product lifecycle management.</p>
+              </div>
+              <div class="slide-visual">
+                <div class="app-mockup bg-edit"></div>
+              </div>
+            </div>
+
+            <div class="slide" id="slide-9">
+              <div class="slide-content">
+                <h2>9. Favorites System</h2>
+                <p>Allows users to save products they like.</p>
+                <h3>Features:</h3>
+                <ul>
+                  <li>Add to Favorites.</li>
+                  <li>Remove from Favorites.</li>
+                  <li>Instant UI Updates.</li>
+                  <li>Shared State using Provider.</li>
+                </ul>
+                <h3>Benefits:</h3>
+                <p>Provides quick access to preferred products.</p>
+              </div>
+              <div class="slide-visual">
+                <div class="app-mockup bg-fav"></div>
+              </div>
+            </div>
+
+            <div class="slide" id="slide-10">
+              <div class="slide-content">
+                <h2>10. Profile & Maps</h2>
+                <h3>Profile:</h3>
+                <ul>
+                  <li>User Information.</li>
+                  <li>Account Management.</li>
+                  <li>Logout Functionality.</li>
+                </ul>
+                <h3>Google Maps:</h3>
+                <ul>
+                  <li>Integration with Google Maps.</li>
+                  <li>Navigation to predefined destination.</li>
+                  <li>Easy access to location services.</li>
+                </ul>
+              </div>
+              <div class="slide-visual">
+                <div class="app-mockup bg-profile"></div>
+              </div>
+            </div>
+
+            <div class="slide" id="slide-11">
+              <div class="slide-content">
+                <h2>11. State Management</h2>
+                <p>Provider was used because it:</p>
+                <ul>
+                  <li>Reduces unnecessary widget rebuilding.</li>
+                  <li>Simplifies data sharing.</li>
+                  <li>Improves code organization.</li>
+                  <li>Updates UI automatically when data changes.</li>
+                </ul>
+                <h3>Used In</h3>
+                <ul>
+                  <li>Products List.</li>
+                  <li>Favorites System.</li>
+                  <li>Product Updates.</li>
+                </ul>
+              </div>
+              <div class="slide-visual">
+                <div class="app-mockup bg-categories"></div>
+              </div>
+            </div>
+
+            <div class="slide" id="slide-12">
+              <div class="slide-content">
+                <h2>12. Conclusion</h2>
+                <p>ShopEase demonstrates:</p>
+                <ul>
+                  <li>Flutter Development.</li>
+                  <li>State Management using Provider.</li>
+                  <li>Local Storage using Shared Preferences.</li>
+                  <li>CRUD Operations.</li>
+                  <li>Favorites Management.</li>
+                  <li>Google Maps Integration.</li>
+                  <li>Responsive User Interface.</li>
+                </ul>
+              </div>
+              <div class="slide-visual" style="width: 450px; border: none; background: transparent; box-shadow: none;">
+                <div class="app-mockup bg-full" style="border-radius: 15px; box-shadow: 0 20px 40px rgba(0,0,0,0.6);"></div>
+              </div>
+            </div>
+
+            <div class="demo-screen" id="demo-screen">
+              <h1>LIVE DEMO READY</h1>
+              <p>Experience the ShopEase application, Provider state updates, and Google Maps routing in real-time.</p>
+              <button class="open-demo-btn" onclick="alert('Running App Demo...')">
+                <i class="fa-solid fa-mobile-screen"></i> Launch Application
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="tv-stand"></div>
+      </div>
+    </div>
+
+    <div class="remote-wrapper">
+      <div class="remote-control">
+        <div class="remote-led" id="remote-led"></div>
+
+        <div class="remote-top-row">
+          <button class="btn btn-power" onclick="togglePower()" title="Power">
+            <i class="fa-solid fa-power-off"></i>
+          </button>
+          <button class="btn btn-demo" onclick="showDemoScreen()" title="Live Demo">
+            <i class="fa-solid fa-play"></i>
+          </button>
+        </div>
+
+        <div class="remote-label">Slides</div>
+        <div class="numpad">
+          <button class="btn btn-num" onclick="goToSlide(1)">1</button>
+          <button class="btn btn-num" onclick="goToSlide(2)">2</button>
+          <button class="btn btn-num" onclick="goToSlide(3)">3</button>
+          <button class="btn btn-num" onclick="goToSlide(4)">4</button>
+          <button class="btn btn-num" onclick="goToSlide(5)">5</button>
+          <button class="btn btn-num" onclick="goToSlide(6)">6</button>
+          <button class="btn btn-num" onclick="goToSlide(7)">7</button>
+          <button class="btn btn-num" onclick="goToSlide(8)">8</button>
+          <button class="btn btn-num" onclick="goToSlide(9)">9</button>
+          <button class="btn btn-num" onclick="goToSlide(10)">10</button>
+          <button class="btn btn-num" onclick="goToSlide(11)">11</button>
+          <button class="btn btn-num" onclick="goToSlide(12)">12</button>
+        </div>
+
+        <div class="remote-label" style="margin-top: 5px">Zoom</div>
+        <div class="zoom-controls">
+          <button class="btn btn-zoom" onclick="adjustZoom(0.1)">
+            <i class="fa-solid fa-plus"></i>
+          </button>
+          <button class="btn btn-zoom" onclick="adjustZoom(-0.1)">
+            <i class="fa-solid fa-minus"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const room = document.getElementById("room");
+      const tvScreen = document.getElementById("tv-screen");
+      const ambilight = document.getElementById("ambilight");
+      const osd = document.getElementById("osd");
+      const remoteLed = document.getElementById("remote-led");
+      const demoScreen = document.getElementById("demo-screen");
+      const staticOverlay = document.getElementById("static-overlay");
+      const blackoutOverlay = document.getElementById("blackout-overlay");
+
+      let currentZoom = 1;
+      let isTvOn = true;
+      let powerTimeout;
+      let osdTimeout;
+
+      function blinkLed() {
+        remoteLed.classList.add("blink");
+        setTimeout(() => remoteLed.classList.remove("blink"), 150);
+      }
+
+      function showOSD(text, color = "#86EFAC") {
+        if (!isTvOn) return;
+        clearTimeout(osdTimeout);
+        osd.textContent = text;
+        osd.style.color = color;
+        osd.style.textShadow = `0 0 10px ${color}`;
+        osd.style.opacity = "1";
+        osdTimeout = setTimeout(() => {
+          osd.style.opacity = "0";
+        }, 2000);
+      }
+
+      function adjustZoom(amount) {
+        blinkLed();
+        currentZoom += amount;
+        if (currentZoom > 1.8) currentZoom = 1.8;
+        if (currentZoom < 0.6) currentZoom = 0.6;
+
+        room.style.transform = `scale(${currentZoom})`;
+        showOSD(`ZOOM ${Math.round(currentZoom * 100)}%`, "#fff");
+      }
+
+      function togglePower() {
+        blinkLed();
+
+        if (isTvOn) {
+          isTvOn = false;
+          ambilight.style.opacity = "0";
+          currentZoom = 0.7;
+          room.style.transform = `scale(${currentZoom})`;
+
+          powerTimeout = setTimeout(() => {
+            tvScreen.classList.add("is-off");
+          }, 1000);
+        } else {
+          clearTimeout(powerTimeout);
+          isTvOn = true;
+
+          tvScreen.classList.remove("is-off");
+          ambilight.style.opacity = "1";
+
+          showOSD("HDMI 1");
+
+          currentZoom = 1;
+          room.style.transform = `scale(${currentZoom})`;
+        }
+      }
+
+      function goToSlide(number) {
+        blinkLed();
+        if (!isTvOn) return;
+
+        staticOverlay.classList.remove("active");
+        blackoutOverlay.classList.remove("active");
+
+        void staticOverlay.offsetWidth;
+
+        staticOverlay.classList.add("active");
+        blackoutOverlay.classList.add("active");
+
+        setTimeout(() => {
+          demoScreen.classList.remove("active");
+          document
+            .querySelectorAll(".slide")
+            .forEach((el) => el.classList.remove("active"));
+
+          const targetSlide = document.getElementById(`slide-${number}`);
+          if (targetSlide) {
+            targetSlide.classList.add("active");
+            showOSD(`CH ${number}`);
+          }
+        }, 150);
+      }
+
+      function showDemoScreen() {
+        blinkLed();
+        if (!isTvOn) return;
+
+        staticOverlay.classList.remove("active");
+        blackoutOverlay.classList.remove("active");
+        void staticOverlay.offsetWidth;
+        staticOverlay.classList.add("active");
+        blackoutOverlay.classList.add("active");
+
+        setTimeout(() => {
+          document
+            .querySelectorAll(".slide")
+            .forEach((el) => el.classList.remove("active"));
+          demoScreen.classList.add("active");
+          showOSD("DEMO MODE", "#86EFAC");
+        }, 150);
+      }
+
+      document.addEventListener("keydown", (e) => {
+        if (!isTvOn && e.key !== "p") return;
+
+        switch (e.key) {
+          case "1": goToSlide(1); break;
+          case "2": goToSlide(2); break;
+          case "3": goToSlide(3); break;
+          case "4": goToSlide(4); break;
+          case "5": goToSlide(5); break;
+          case "6": goToSlide(6); break;
+          case "7": goToSlide(7); break;
+          case "8": goToSlide(8); break;
+          case "9": goToSlide(9); break;
+          case "10": goToSlide(10); break;
+          case "11": goToSlide(11); break;
+          case "12": goToSlide(12); break;
+          case "+": adjustZoom(0.1); break;
+          case "-": adjustZoom(-0.1); break;
+          case "p": togglePower(); break;
+          case "d": showDemoScreen(); break;
+        }
+      });
+    </script>
+  </body>
+</html>
