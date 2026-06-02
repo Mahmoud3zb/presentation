@@ -238,7 +238,6 @@
 
       .slide.active { opacity: 1; visibility: visible; transform: scale(1); }
 
-      /* شريحة عرض الصورة كاملة */
       .slide-full-image {
         padding: 0;
         justify-content: center;
@@ -253,7 +252,6 @@
       .slide li { font-size: 1.2rem; line-height: 1.8; margin-bottom: 10px; color: #d1fae5; }
       .highlight { color: #fff; font-weight: 800; border-bottom: 2px solid var(--primary); }
 
-      /* Visual container for the UI screenshots */
       .slide-visual {
         width: 250px;
         height: 520px;
@@ -270,23 +268,25 @@
       .app-mockup {
         width: 100%;
         height: 100%;
-        background-image: url("WhatsApp Image 2026-06-01 at 2.38.57 AM.jpeg");
-        background-size: 610% 210%; 
+        display: block;
+        background-image: url('ui.jpeg');
+        background-size: 630% 215%; 
         background-repeat: no-repeat;
+        border-radius: 12px;
       }
 
-      /* إحداثيات كل شاشة بدقة لتغطية الموبايل المعروض في الشريحة */
-      .bg-splash { background-position: 20% 4%; }
-      .bg-login { background-position: 40% 4%; }
-      .bg-register { background-position: 60% 4%; }
-      .bg-home { background-position: 80% 4%; }
-      .bg-details { background-position: 100% 4%; }
+      /* إحداثيات كل شاشة بدقة (تم إعادة ضبطها) */
+      .bg-splash    { background-position: 20% 3%; }
+      .bg-login     { background-position: 40% 3%; }
+      .bg-register  { background-position: 60% 3%; }
+      .bg-home      { background-position: 80% 3%; }
+      .bg-details   { background-position: 100% 3%; }
       
-      .bg-add { background-position: 20% 98%; }
-      .bg-edit { background-position: 40% 98%; }
-      .bg-fav { background-position: 60% 98%; }
-      .bg-profile { background-position: 80% 98%; }
-      .bg-categories { background-position: 100% 98%; }
+      .bg-add       { background-position: 20% 98%; }
+      .bg-edit      { background-position: 40% 98%; }
+      .bg-fav       { background-position: 60% 98%; }
+      .bg-profile   { background-position: 80% 98%; }
+      .bg-categories{ background-position: 100% 98%; }
 
       .demo-screen {
         position: absolute;
@@ -431,12 +431,10 @@
             <div class="static-overlay" id="static-overlay"></div>
             <div class="osd-text" id="osd">CH 1</div>
 
-            <!-- Slide 1: Full Image Only (All UI Screens) -->
             <div class="slide slide-full-image active" id="slide-1">
                 <img src="ui.jpeg" style="max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 15px; box-shadow: 0 20px 40px rgba(0,0,0,0.6);" alt="Full UI Overview" />
             </div>
 
-            <!-- Slide 2: Overview -->
             <div class="slide" id="slide-2">
               <div class="slide-content">
                 <h2>1. Project Overview</h2>
@@ -460,7 +458,6 @@
               </div>
             </div>
 
-            <!-- Slide 3: Idea -->
             <div class="slide" id="slide-3">
               <div class="slide-content">
                 <h2>2. Project Idea</h2>
@@ -481,7 +478,6 @@
               </div>
             </div>
 
-            <!-- Slide 4: Tech -->
             <div class="slide" id="slide-4">
               <div class="slide-content">
                 <h2>3. Technologies Used</h2>
@@ -497,7 +493,6 @@
               </div>
             </div>
 
-            <!-- Slide 5: Flow -->
             <div class="slide" id="slide-5">
               <div class="slide-content">
                 <h2>4. Application Flow</h2>
@@ -515,7 +510,6 @@
               </div>
             </div>
 
-            <!-- Slide 6: Auth -->
             <div class="slide" id="slide-6">
               <div class="slide-content">
                 <h2>5. Authentication</h2>
@@ -536,7 +530,6 @@
               </div>
             </div>
 
-            <!-- Slide 7: Home -->
             <div class="slide" id="slide-7">
               <div class="slide-content">
                 <h2>6. Home Screen</h2>
@@ -559,7 +552,6 @@
               </div>
             </div>
 
-            <!-- Slide 8: Details -->
             <div class="slide" id="slide-8">
               <div class="slide-content">
                 <h2>7. Product Details</h2>
@@ -580,7 +572,6 @@
               </div>
             </div>
 
-            <!-- Slide 9: CRUD -->
             <div class="slide" id="slide-9">
               <div class="slide-content">
                 <h2>8. CRUD Operations</h2>
@@ -593,7 +584,6 @@
               </div>
             </div>
 
-            <!-- Slide 10: Favorites -->
             <div class="slide" id="slide-10">
               <div class="slide-content">
                 <h2>9. Favorites System</h2>
@@ -613,7 +603,6 @@
               </div>
             </div>
 
-            <!-- Slide 11: Profile & Maps -->
             <div class="slide" id="slide-11">
               <div class="slide-content">
                 <h2>10. Profile & Maps</h2>
@@ -635,7 +624,6 @@
               </div>
             </div>
 
-            <!-- Slide 12: State Management -->
             <div class="slide" id="slide-12">
               <div class="slide-content">
                 <h2>11. State Management</h2>
@@ -658,7 +646,6 @@
               </div>
             </div>
 
-            <!-- Slide 13: Conclusion -->
             <div class="slide" id="slide-13">
               <div class="slide-content">
                 <h2>12. Conclusion</h2>
@@ -673,9 +660,8 @@
                   <li>Responsive User Interface.</li>
                 </ul>
               </div>
-              <!-- الخاتمة مع الصورة الكاملة للـ UI -->
               <div class="slide-visual" style="width: 450px; border: none; background: transparent; box-shadow: none; display: flex; align-items: center; justify-content: center;">
-                <img src="WhatsApp Image 2026-06-01 at 2.38.57 AM.jpeg" style="max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 15px; box-shadow: 0 20px 40px rgba(0,0,0,0.6);" alt="Full UI" />
+                <img src="ui.jpeg" style="max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 15px; box-shadow: 0 20px 40px rgba(0,0,0,0.6);" alt="Full UI" />
               </div>
             </div>
 
@@ -707,7 +693,6 @@
 
         <div class="remote-label">Slides</div>
         <div class="numpad">
-          <!-- 15 Buttons Grid to fit 13 Slides seamlessly -->
           <button class="btn btn-num" onclick="goToSlide(1)">1</button>
           <button class="btn btn-num" onclick="goToSlide(2)">2</button>
           <button class="btn btn-num" onclick="goToSlide(3)">3</button>
@@ -863,7 +848,6 @@
           case "7": goToSlide(7); break;
           case "8": goToSlide(8); break;
           case "9": goToSlide(9); break;
-          // دعم الأرقام عبر الكيبورد (لتبسيط الوصول تم ربط 0 إلى الشريحة 10 وهكذا)
           case "0": goToSlide(10); break;
           case "q": goToSlide(11); break;
           case "w": goToSlide(12); break;
