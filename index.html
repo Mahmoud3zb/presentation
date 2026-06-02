@@ -238,6 +238,7 @@
 
       .slide.active { opacity: 1; visibility: visible; transform: scale(1); }
 
+      /* شريحة عرض الصورة كاملة */
       .slide-full-image {
         padding: 0;
         justify-content: center;
@@ -252,6 +253,7 @@
       .slide li { font-size: 1.2rem; line-height: 1.8; margin-bottom: 10px; color: #d1fae5; }
       .highlight { color: #fff; font-weight: 800; border-bottom: 2px solid var(--primary); }
 
+      /* Visual container for the UI screenshots */
       .slide-visual {
         width: 250px;
         height: 520px;
@@ -264,29 +266,13 @@
         flex-shrink: 0;
       }
 
-      /* CSS Sprite logic to split the image accurately */
-      .app-mockup {
+      /* CSS for the individual images inside the phone mockup */
+      .slide-visual img.app-screenshot {
         width: 100%;
         height: 100%;
+        object-fit: cover;
         display: block;
-        background-image: url('ui.jpeg');
-        background-size: 630% 215%; 
-        background-repeat: no-repeat;
-        border-radius: 12px;
       }
-
-      /* إحداثيات كل شاشة بدقة (تم إعادة ضبطها) */
-      .bg-splash    { background-position: 20% 3%; }
-      .bg-login     { background-position: 40% 3%; }
-      .bg-register  { background-position: 60% 3%; }
-      .bg-home      { background-position: 80% 3%; }
-      .bg-details   { background-position: 100% 3%; }
-      
-      .bg-add       { background-position: 20% 98%; }
-      .bg-edit      { background-position: 40% 98%; }
-      .bg-fav       { background-position: 60% 98%; }
-      .bg-profile   { background-position: 80% 98%; }
-      .bg-categories{ background-position: 100% 98%; }
 
       .demo-screen {
         position: absolute;
@@ -454,7 +440,7 @@
                 </ul>
               </div>
               <div class="slide-visual">
-                <div class="app-mockup bg-splash"></div>
+                <img src="Screenshot 2026-06-02 202058.png" class="app-screenshot" alt="Splash Screen" />
               </div>
             </div>
 
@@ -474,7 +460,7 @@
                 <p>The application focuses on simplicity, usability, and efficient state management.</p>
               </div>
               <div class="slide-visual">
-                <div class="app-mockup bg-home"></div>
+                <img src="Screenshot 2026-06-02 202145.png" class="app-screenshot" alt="Home Screen" />
               </div>
             </div>
 
@@ -489,7 +475,7 @@
                 <p><span class="highlight">Material Design</span> Used to create a modern and responsive user interface.</p>
               </div>
               <div class="slide-visual">
-                <div class="app-mockup bg-register"></div>
+                <img src="Screenshot 2026-06-02 202134.png" class="app-screenshot" alt="Register Screen" />
               </div>
             </div>
 
@@ -506,7 +492,7 @@
                 </ul>
               </div>
               <div class="slide-visual">
-                <div class="app-mockup bg-categories"></div>
+                <img src="Screenshot 2026-06-02 202252.png" class="app-screenshot" alt="Categories Screen" />
               </div>
             </div>
 
@@ -526,7 +512,7 @@
                 <p>Improves user experience by keeping users logged in between sessions.</p>
               </div>
               <div class="slide-visual">
-                <div class="app-mockup bg-login"></div>
+                <img src="Screenshot 2026-06-02 202121.png" class="app-screenshot" alt="Login Screen" />
               </div>
             </div>
 
@@ -548,7 +534,7 @@
                 </ul>
               </div>
               <div class="slide-visual">
-                <div class="app-mockup bg-home"></div>
+                <img src="Screenshot 2026-06-02 202145.png" class="app-screenshot" alt="Home Screen" />
               </div>
             </div>
 
@@ -568,7 +554,7 @@
                 <p>Allows users to view detailed product information before making decisions.</p>
               </div>
               <div class="slide-visual">
-                <div class="app-mockup bg-details"></div>
+                <img src="Screenshot 2026-06-02 202158.png" class="app-screenshot" alt="Details Screen" />
               </div>
             </div>
 
@@ -580,7 +566,7 @@
                 <p>Provides complete product lifecycle management.</p>
               </div>
               <div class="slide-visual">
-                <div class="app-mockup bg-add"></div>
+                <img src="Screenshot 2026-06-02 202210.png" class="app-screenshot" alt="Add Product Screen" />
               </div>
             </div>
 
@@ -599,7 +585,7 @@
                 <p>Provides quick access to preferred products.</p>
               </div>
               <div class="slide-visual">
-                <div class="app-mockup bg-fav"></div>
+                <img src="Screenshot 2026-06-02 202230.png" class="app-screenshot" alt="Favorites Screen" />
               </div>
             </div>
 
@@ -620,7 +606,7 @@
                 </ul>
               </div>
               <div class="slide-visual">
-                <div class="app-mockup bg-profile"></div>
+                <img src="Screenshot 2026-06-02 202241.png" class="app-screenshot" alt="Profile Screen" />
               </div>
             </div>
 
@@ -642,7 +628,7 @@
                 </ul>
               </div>
               <div class="slide-visual">
-                <div class="app-mockup bg-edit"></div>
+                <img src="Screenshot 2026-06-02 202219.png" class="app-screenshot" alt="Edit Product Screen" />
               </div>
             </div>
 
